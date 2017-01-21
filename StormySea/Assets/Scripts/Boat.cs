@@ -15,6 +15,8 @@ public class Boat : MonoBehaviour
     private float slope_speed = 50f;
     private float velocity;
 
+    private float x_boundary = 8;
+
     private float shock_build = 0;
     private bool alive = true;
 
@@ -84,13 +86,14 @@ public class Boat : MonoBehaviour
 
             Vector2 newpos = pos + Vector2.right * velocity * Time.deltaTime;
             newpos.y = ocean_pos.y; // wave attachment
+            newpos.x = Mathf.Clamp(newpos.x, -x_boundary, x_boundary);
             rb.MovePosition(newpos);
 
             // Rotation
             //if (pos.y <= ocean_pos.y)
             //{
             float target_r = Mathf.Atan2(tangent.y, tangent.x) * Mathf.Rad2Deg;
-            rb.MoveRotation(Mathf.Lerp(rb.rotation, target_r, Time.deltaTime * 8f));
+            rb.MoveRotation(Mathf.Lerp(rb.rotation, target_r, Time.deltaTime * 4f));
             //}
         }
         else
