@@ -28,13 +28,13 @@ public class Ocean : MonoBehaviour
         wave.waves[2] = new MovingWave(0.5f, 10, 3);
 
         line = GetComponent<LineRenderer>();
-        line.SetVertexCount(vertices_n);
+        line.numPositions = vertices_n;
     }
     private void Update()
     {
-        UpdateWave();
+        RedrawWave();
     }
-    private void UpdateWave()
+    private void RedrawWave()
     {
         for (int i = 0; i < vertices_n; ++i)
         {
@@ -42,9 +42,8 @@ public class Ocean : MonoBehaviour
 
             Vector2 vertex = new Vector2();
             vertex.x = t * line_length - line_length / 2f;
-            vertex.y = wave.GetHeight(t);
+            vertex.y = wave.GetHeight(t) - line.startWidth;
 
-            // Graphics
             line.SetPosition(i, vertex);
         }
     }
