@@ -7,6 +7,7 @@ public class Boat : MonoBehaviour
     private Rigidbody2D rb;
     public float speed = 3f;
     private float slope_speed = 50f;
+    private float rise = 0.2f;
     private float velocity;
 
 
@@ -47,7 +48,7 @@ public class Boat : MonoBehaviour
         velocity += acceleration * Time.deltaTime;
         velocity /= 1 + (1.5f * Time.deltaTime);
         Vector2 newpos = pos + Vector2.right * velocity * Time.deltaTime;
-        newpos.y = ocean_pos.y;
+        newpos.y = ocean_pos.y + rise;
         rb.MovePosition(newpos);
 
         // Rotation
