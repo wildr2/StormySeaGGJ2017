@@ -4,14 +4,12 @@ using System.Collections;
 public class Ocean : MonoBehaviour
 {
     // Waves
-    CompositeWave wave;
+    private CompositeWave wave;
 
     // Graphics
     public LineRenderer line;
     private int vertices_n = 1000;
     private int line_length = 35;
-
-
 
 
     public float GetHeight(float x)
@@ -24,31 +22,31 @@ public class Ocean : MonoBehaviour
     private void Awake()
     {
         wave = new CompositeWave();
-        wave.waves = new MovingWave[2];
+        wave.waves = new MovingWave[3];
         wave.waves[0] = new MovingWave(1, 50, 2);
         wave.waves[1] = new MovingWave(1, 30, -1);
+        wave.waves[2] = new MovingWave(0.5f, 10, 3);
 
         line = GetComponent<LineRenderer>();
         line.SetVertexCount(vertices_n);
     }
-
+    private void Update()
+    {
+        UpdateWave();
+    }
     private void UpdateWave()
     {
         for (int i = 0; i < vertices_n; ++i)
         {
             float t = (float)i / vertices_n;
-            float x = t * Mathf.PI * 2f;
 
-            float h = wave.GetHeight(t);
+            Vector2 vertex = new Vector2();
+            vertex.x = t * line_length - line_length / 2f;
+            vertex.y = wave.GetHeight(t);
 
             // Graphics
-            line.SetPosition(i, new Vector2(t * line_length - line_length / 2f, h));
+            line.SetPosition(i, vertex);
         }
-    }
-
-    private void Update()
-    {
-        UpdateWave();
     }
 }
 

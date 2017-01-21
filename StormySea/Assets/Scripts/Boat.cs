@@ -13,18 +13,38 @@ public class Boat : MonoBehaviour
     private void Update()
     {
         Vector2 pos = transform.position;
-        
-        float height0 = ocean.GetHeight(pos.x-0.1f);
-        float height1 = ocean.GetHeight(pos.x);
-        Vector2 tangent = new Vector2(pos.x, height1) - new Vector2(pos.x-0.1f, height0);
-        tangent = tangent.normalized;
+        Vector2 ocean_pos = new Vector2(pos.x, ocean.GetHeight(pos.x));
+        Vector2 ocean_pos_left = new Vector2(pos.x - 0.01f, ocean.GetHeight(pos.x - 0.01f));
+        Vector2 tangent = (ocean_pos - ocean_pos_left).normalized;
 
-        pos.y = height1 + 0.5f;
+        float slope = tangent.y / tangent.x;
+        float slope_factor = slope >= 0 ? 1f / (slope + 1) : (-slope + 1);
+        pos.x -= slope * 2f * Time.deltaTime;
+
+        float input_x = Input.GetAxis("Horizontal");
+        pos.x += input_x * 5f * Time.deltaTime;
 
         transform.position = pos;
-        transform.rotation = Quaternion.Euler(0, 0, 
+
+
+        UpdateWaveAttachment();
+    }
+    private void UpdateWaveAttachment()
+    {
+        Vector2 pos = transform.position;
+
+        Vector2 ocean_pos = new Vector2(pos.x, ocean.GetHeight(pos.x));
+        Vector2 ocean_pos_left = new Vector2(pos.x-0.01f, ocean.GetHeight(pos.x-0.01f));
+        Vector2 tangent = (ocean_pos - ocean_pos_left).normalized;
+
+        // Set Position
+        Vector2 target_pos = new Vector2(pos.x, ocean_pos.y + 0.5f);
+        transform.position = Vector2.Lerp(pos, target_pos, Time.deltaTime * 20f);
+
+        // Set Rotation
+        Quaternion target_r = Quaternion.Euler(0, 0,
             Mathf.Atan2(tangent.y, tangent.x) * Mathf.Rad2Deg);
 
-
+        transform.rotation = Quaternion.Slerp(transform.rotation, target_r, Time.deltaTime * 4f);
     }
 }
