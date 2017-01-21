@@ -10,12 +10,13 @@ public class Ocean : MonoBehaviour
     public LineRenderer line;
     private int vertices_n = 1000;
     private int line_length = 35;
+    private float line_width = 0.3f;
 
 
     public float GetHeight(float x)
     {
         float t = (x + line_length / 2f) / line_length;
-        return wave.GetHeight(t);
+        return wave.GetHeight(t) + transform.position.y;
     }
 
 
@@ -23,12 +24,18 @@ public class Ocean : MonoBehaviour
     {
         wave = new CompositeWave();
         wave.waves = new MovingWave[3];
-        wave.waves[0] = new MovingWave(1, 50, 2);
-        wave.waves[1] = new MovingWave(1, 30, -1);
-        wave.waves[2] = new MovingWave(0.5f, 10, 3);
+
+        float amp_mult = 1.5f;
+        float freq_mult = 0.7f;
+        float speed_mult = 0.3f;
+
+        wave.waves[0] = new MovingWave(1 * amp_mult, 50 * freq_mult, 2 * speed_mult);
+        wave.waves[1] = new MovingWave(1 * amp_mult, 30 * freq_mult, -1 * speed_mult);
+        wave.waves[2] = new MovingWave(0.5f * amp_mult, 10 * freq_mult, 3 * speed_mult);
 
         line = GetComponent<LineRenderer>();
-        line.numPositions = vertices_n;
+        line.SetVertexCount(vertices_n);
+        line.SetWidth(line_width, line_width);
     }
     private void Update()
     {
@@ -42,7 +49,7 @@ public class Ocean : MonoBehaviour
 
             Vector2 vertex = new Vector2();
             vertex.x = t * line_length - line_length / 2f;
-            vertex.y = wave.GetHeight(t) - line.startWidth;
+            vertex.y = wave.GetHeight(t) - line_width / 2f;
 
             line.SetPosition(i, vertex);
         }
