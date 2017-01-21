@@ -4,10 +4,34 @@ using System.Collections;
 public class Boat : MonoBehaviour 
 {
     private Ocean ocean;
+
     private Rigidbody2D rb;
-    public float speed = 3f;
+    public SpriteRenderer sprite_r;
+    public ParticleSystem fire;
+    public SpriteRenderer lightning;
+
+    private float speed = 3f;
     private float slope_speed = 50f;
     private float velocity;
+
+    private float shock_build = 0;
+
+
+    public bool BuildShock(float amount)
+    {
+        bool shocked = false;
+
+        shock_build += amount;
+        if (shock_build >= 1)
+        {
+            OnShock();
+            shocked = true;
+        }
+
+        UpdateShockIndicator();
+
+        return shocked;
+    }
 
 
     private void Awake()
@@ -18,6 +42,9 @@ public class Boat : MonoBehaviour
 
     private void Update()
     {
+        // shock diminish
+        shock_build = Mathf.Max(0, shock_build - Time.deltaTime);
+        UpdateShockIndicator();
     }
     private void FixedUpdate()
     {
@@ -57,4 +84,34 @@ public class Boat : MonoBehaviour
             rb.MoveRotation(Mathf.Lerp(rb.rotation, target_r, Time.deltaTime * 8f));
         //}
     }
+    private void LateUpdate()
+    {
+
+    }
+
+    
+    private void OnShock()
+    {
+        shock_build = 0;
+        StartCoroutine(FlashLightning());
+    }
+    private void UpdateShockIndicator()
+    {
+        //if (shock_build == 0) fire.enableEmission = false;
+        //else fire.enableEmission = true;
+        fire.startLifetime = shock_build;
+    }
+
+    private IEnumerator FlashLightning()
+    {
+        lightning.gameObject.SetActive(true);
+        for (float t = 0; t < 0.1f; t += Time.deltaTime)
+        {
+            //lightning.transform.rotation = Quaternion.Euler(0, 0, 0);
+
+            yield return null;
+        }
+        lightning.gameObject.SetActive(false);
+    }
+
 }
