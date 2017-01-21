@@ -7,7 +7,6 @@ public class Boat : MonoBehaviour
     private Rigidbody2D rb;
     public float speed = 3f;
     private float slope_speed = 50f;
-    private float rise = 0.2f;
     private float velocity;
 
 
@@ -48,14 +47,14 @@ public class Boat : MonoBehaviour
         velocity += acceleration * Time.deltaTime;
         velocity /= 1 + (1.5f * Time.deltaTime);
         Vector2 newpos = pos + Vector2.right * velocity * Time.deltaTime;
-        newpos.y = ocean_pos.y + rise;
+        newpos.y = ocean_pos.y;
         rb.MovePosition(newpos);
 
         // Rotation
         //if (pos.y <= ocean_pos.y)
         //{
             float target_r = Mathf.Atan2(tangent.y, tangent.x) * Mathf.Rad2Deg;
-            rb.MoveRotation(Mathf.Lerp(rb.rotation, target_r, Time.deltaTime * 4f));
+            rb.MoveRotation(Mathf.Lerp(rb.rotation, target_r, Time.deltaTime * 8f));
         //}
     }
 }

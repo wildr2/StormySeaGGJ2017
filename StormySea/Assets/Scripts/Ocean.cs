@@ -13,6 +13,7 @@ public class Ocean : MonoBehaviour
     private int line_length = 35;
     //private float line_width = 0.3f;
 
+    float crest_height = 0.1f;
     private Mesh water_mesh, crest_mesh;
     public MeshFilter water_meshfilter, crest_meshfilter;
 
@@ -102,8 +103,6 @@ public class Ocean : MonoBehaviour
     }
     private void RecreateCrestMesh()
     {
-        float crest_height = 0.2f;
-
         List<Vector3> verts = new List<Vector3>();
         for (int i = 0; i < vertices_n; ++i)
         {
