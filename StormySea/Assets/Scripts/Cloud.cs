@@ -17,10 +17,7 @@ public class Cloud : MonoBehaviour
         
         if (boat != null)
         {
-            if (boat.BuildShock(Time.deltaTime * shock_speed))
-            {
-
-            }
+            boat.BuildShock(Time.deltaTime * shock_speed);
         }
     }
 }
