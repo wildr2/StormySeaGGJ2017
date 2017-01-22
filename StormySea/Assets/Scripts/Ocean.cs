@@ -36,7 +36,7 @@ public class Ocean : MonoBehaviour
         float freq_mult = 0.7f;
         float speed_mult = 0.3f;
 
-        Random.seed = 23562362;
+        Random.seed = 2362362;
 
         wave.waves[0] = new MovingWave(1 * amp_mult, 50 * freq_mult, 2 * speed_mult);
         wave.waves[1] = new MovingWave(1 * amp_mult, 30 * freq_mult, -1 * speed_mult);
