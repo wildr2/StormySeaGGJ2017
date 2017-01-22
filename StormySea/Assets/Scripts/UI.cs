@@ -49,7 +49,7 @@ public class UI : MonoBehaviour
 
         for (float t = 0; t < 1; t += Time.deltaTime * 3f)
         {
-            float tt = Mathf.Pow(t, 2);
+            float tt = Mathf.Pow(t, 1);
 
             title.color = Color.Lerp(Color.white, Color.clear, tt);
             lower_panel.alpha = Mathf.Lerp(0, 1, tt);
