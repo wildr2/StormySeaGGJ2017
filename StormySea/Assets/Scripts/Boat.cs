@@ -27,6 +27,8 @@ public class Boat : MonoBehaviour
     private float shock_build = 0;
     private Cloud shocking_cloud = null;
 
+    public System.Action<Boat> on_boat_die;
+
 
     private void Awake()
     {
@@ -37,11 +39,16 @@ public class Boat : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.collider.GetComponent<Rock>() != null)
-            OnDie();
+        if (alive)
+        {
+            if (collision.collider.GetComponent<Rock>() != null)
+                OnDie();
+        }   
     }
     private void OnTriggerStay2D(Collider2D collider)
     {
+        if (!alive) return;
+
         Cloud cloud = collider.GetComponentInParent<Cloud>();
         if (cloud != null && cloud.IsDangerous())
         {
@@ -139,6 +146,8 @@ public class Boat : MonoBehaviour
         StartCoroutine(FadeGlow());
 
         scroller.Pause();
+
+        if (on_boat_die != null) on_boat_die(this);
     }
     private IEnumerator RestartAfterDeath()
     {

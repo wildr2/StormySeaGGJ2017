@@ -42,7 +42,6 @@ public class CloudSpawner : MonoBehaviour
     {
         Cloud c = Instantiate(cloud_prefab);
         c.transform.SetParent(transform);
-        Debug.Log(c.sprite_r.bounds.size.x / 2f);
         c.transform.position = new Vector2(
             transform.position.x + c.sprite_r.bounds.size.x,
             transform.position.y + (Random.value - 0.5f) * 5f);
