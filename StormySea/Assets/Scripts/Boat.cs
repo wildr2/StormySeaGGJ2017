@@ -138,7 +138,7 @@ public class Boat : MonoBehaviour
     }
     private IEnumerator RestartAfterDeath()
     {
-        yield return new WaitForSeconds(1);
+        //yield return new WaitForSeconds(1);
         while (!Input.GetKeyDown(KeyCode.Space))
         {
             yield return null;
@@ -161,6 +161,7 @@ public class Boat : MonoBehaviour
         //else fire.enableEmission = true;
         //fire.startLifetime = shock_build;
 
+        
         shock_indicator.color = Color.Lerp(Color.clear, Color.white, shock_build);
     }
 
