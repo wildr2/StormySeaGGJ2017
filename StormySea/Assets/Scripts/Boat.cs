@@ -17,7 +17,7 @@ public class Boat : MonoBehaviour
     private float slope_speed = 50f;
     private float velocity;
 
-    private float x_boundary = 9.5f;
+    private float x_boundary = 8f;
 
     private float shock_build = 0;
     private bool alive = true;
