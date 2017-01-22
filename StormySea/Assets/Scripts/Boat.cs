@@ -30,6 +30,11 @@ public class Boat : MonoBehaviour
     public System.Action<Boat> on_boat_die;
 
 
+    public float GetDistanceTravelled()
+    {
+        return scroller.DistanceTravelled + transform.position.x;
+    }
+
     private void Awake()
     {
         ocean = FindObjectOfType<Ocean>();
@@ -96,7 +101,7 @@ public class Boat : MonoBehaviour
             acceleration += input_x * speed;
 
             input_seconds += input_x != 0 ? Time.deltaTime : 0;
-            Score = (int)((scroller.DistanceTravelled + transform.position.x - input_seconds) * 10f);
+            Score = (int)((GetDistanceTravelled() - input_seconds) * 10f);
 
             // slope
             float slope = tangent.y / tangent.x;

@@ -8,6 +8,7 @@ public class ScrollManager : MonoBehaviour
     public static float ScrollSpeed { get; private set; }
     public bool Paused { get; private set; }
     public float DistanceTravelled { get; private set; }
+    public float MapDistance { get; private set; }
 
     public void Play()
     {
@@ -23,6 +24,7 @@ public class ScrollManager : MonoBehaviour
     private void Start()
     {
         Play();
+        MapDistance = 66f;
     }
     private void Update()
     {
