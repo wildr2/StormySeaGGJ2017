@@ -22,8 +22,8 @@ public class Boat : MonoBehaviour
     private float input_seconds = 0;
     public float Score { get; private set; }
 
-    private float shock_build_rate = 1;
-    private float shock_fall_rate = 1;
+    private float shock_build_rate = 0.75f;
+    private float shock_fall_rate = 0.75f;
     private float shock_build = 0;
     private Cloud shocking_cloud = null;
 
