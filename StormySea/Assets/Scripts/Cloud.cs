@@ -23,12 +23,11 @@ public class Cloud : MonoBehaviour
         }
         else
         {
-            speed = Random.value + 0.5f;
+            speed = 1;
         }
     }
     private void Update()
     {
-        Debug.Log(speed);
         transform.position = (Vector2)transform.position +
             Vector2.left * Time.deltaTime * Boat.ScrollSpeed * speed;
     }
