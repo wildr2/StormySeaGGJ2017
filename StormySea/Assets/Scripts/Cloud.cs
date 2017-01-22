@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Cloud : MonoBehaviour 
 {
-    private float shock_speed = 1.3f;
+    private float shock_speed = 0.9f;
     public SpriteRenderer spark, sprite;
 
     private float speed;
@@ -28,6 +28,7 @@ public class Cloud : MonoBehaviour
     }
     private void Update()
     {
+        Debug.Log(speed);
         transform.position = (Vector2)transform.position +
             Vector2.left * Time.deltaTime * Boat.ScrollSpeed * speed;
     }
@@ -43,16 +44,6 @@ public class Cloud : MonoBehaviour
             spark.gameObject.SetActive(true);
             yield return new WaitForSeconds(0.1f);
             spark.gameObject.SetActive(false);
-        }
-    }
-
-    private void OnTriggerStay2D(Collider2D collider)
-    {
-        Boat boat = collider.GetComponentInParent<Boat>();
-        
-        if (boat != null)
-        {
-            boat.BuildShock(Time.deltaTime * shock_speed);
         }
     }
 }

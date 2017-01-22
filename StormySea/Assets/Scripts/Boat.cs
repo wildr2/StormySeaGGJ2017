@@ -9,7 +9,7 @@ public class Boat : MonoBehaviour
     private Ocean ocean;
 
     private Rigidbody2D rb;
-    public SpriteRenderer sprite_r;
+    public SpriteRenderer sprite_r, shock_indicator;
     public ParticleSystem fire;
     public SpriteRenderer lightning;
 
@@ -21,22 +21,7 @@ public class Boat : MonoBehaviour
 
     private float shock_build = 0;
     private bool alive = true;
-
-    public bool BuildShock(float amount)
-    {
-        bool shocked = false;
-
-        shock_build += amount;
-        if (shock_build >= 1)
-        {
-            OnShock();
-            shocked = true;
-        }
-
-        UpdateShockIndicator();
-
-        return shocked;
-    }
+    private Cloud shocking_cloud = null;
 
 
     private void Awake()
@@ -45,15 +30,33 @@ public class Boat : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
-    void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.collider.GetComponent<Rock>() != null)
             OnDie();
     }
+    private void OnTriggerStay2D(Collider2D collider)
+    {
+        Cloud cloud = collider.GetComponentInParent<Cloud>();
+        if (cloud != null && cloud.IsDangerous())
+        {
+            shocking_cloud = cloud;
+        }
+    }
     private void Update()
     {
         // shock diminish
-        shock_build = Mathf.Max(0, shock_build - Time.deltaTime);
+        if (shocking_cloud != null) 
+        {
+            shock_build += Time.deltaTime * 0.5f;
+            if (shock_build >= 1)
+            {
+                OnShock(shocking_cloud);
+            }
+        }
+        else shock_build = Mathf.Max(0, shock_build - Time.deltaTime * 0.5f);
+        shocking_cloud = null;
+
         UpdateShockIndicator();
     }
     private void FixedUpdate()
@@ -128,26 +131,34 @@ public class Boat : MonoBehaviour
         Boat.ScrollSpeed = 1;
     }
 
-    private void OnShock()
+    private void OnShock(Cloud shocker)
     {
         shock_build = 0;
-        StartCoroutine(FlashLightning());
+        StartCoroutine(FlashLightning(shocker));
         OnDie();
     }
     private void UpdateShockIndicator()
     {
         //if (shock_build == 0) fire.enableEmission = false;
         //else fire.enableEmission = true;
-        fire.startLifetime = shock_build;
-        sprite_r.color = Color.Lerp(Color.white, Color.yellow, shock_build);
+        //fire.startLifetime = shock_build;
+
+        shock_indicator.color = Color.Lerp(Color.clear, Color.white, shock_build);
     }
 
-    private IEnumerator FlashLightning()
+    private IEnumerator FlashLightning(Cloud shocker)
     {
         lightning.gameObject.SetActive(true);
         for (float t = 0; t < 0.1f; t += Time.deltaTime)
         {
-            //lightning.transform.rotation = Quaternion.Euler(0, 0, 0);
+            Vector2 p0 = transform.position;
+            Vector2 p1 = shocker.transform.position;
+            Vector2 dir = (p1 - p0).normalized;
+
+            float l_height = lightning.sprite.bounds.size.y * lightning.transform.localScale.y;
+
+            lightning.transform.position = p0 + dir * (l_height * 0.5f - 0.1f);
+            lightning.transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90);
 
             yield return null;
         }
