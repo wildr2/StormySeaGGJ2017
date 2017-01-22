@@ -4,7 +4,7 @@ using System.Collections;
 public class RainManager : MonoBehaviour 
 {
     private SpriteRenderer[] sprites;
-    private float speed = 25;
+    private float speed = 50;
 
 	private void Awake()
     {

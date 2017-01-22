@@ -4,23 +4,25 @@ using UnityEngine.SceneManagement;
 
 public class Boat : MonoBehaviour 
 {
-    public static float ScrollSpeed = 1;
-
     private Ocean ocean;
+    private ScrollManager scroller;
 
     private Rigidbody2D rb;
     public SpriteRenderer sprite_r, shock_indicator;
     public ParticleSystem fire;
     public SpriteRenderer lightning;
 
-    private float speed = 3f;
-    private float slope_speed = 50f;
+    private float speed = 6f;
+    private float slope_slide = 2f;
     private float velocity;
 
     private float x_boundary = 8f;
 
-    private float shock_build = 0;
     private bool alive = true;
+
+    private float shock_build_rate = 1;
+    private float shock_fall_rate = 1;
+    private float shock_build = 0;
     private Cloud shocking_cloud = null;
 
 
@@ -28,6 +30,7 @@ public class Boat : MonoBehaviour
     {
         ocean = FindObjectOfType<Ocean>();
         rb = GetComponent<Rigidbody2D>();
+        scroller = FindObjectOfType<ScrollManager>();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -48,13 +51,13 @@ public class Boat : MonoBehaviour
         // shock diminish
         if (shocking_cloud != null) 
         {
-            shock_build += Time.deltaTime * 0.5f;
+            shock_build += Time.deltaTime * shock_build_rate;
             if (shock_build >= 1)
             {
                 OnShock(shocking_cloud);
             }
         }
-        else shock_build = Mathf.Max(0, shock_build - Time.deltaTime * 0.5f);
+        else shock_build = Mathf.Max(0, shock_build - Time.deltaTime * shock_fall_rate);
         shocking_cloud = null;
 
         UpdateShockIndicator();
@@ -82,8 +85,7 @@ public class Boat : MonoBehaviour
 
             // slope
             float slope = tangent.y / tangent.x;
-            float slope_factor = slope >= 0 ? 1f / (slope * slope_speed + 1) : (-slope * slope_speed + 1);
-            acceleration -= slope * 1f;
+            acceleration -= slope * slope_slide;
 
             // velocity, position
             velocity += acceleration * Time.deltaTime;
@@ -103,7 +105,16 @@ public class Boat : MonoBehaviour
         }
         else
         {
-            rb.gravityScale = pos.y < ocean_pos.y ? 0.05f : 1;
+            if (pos.y > ocean_pos.y)
+            {
+                rb.drag = 0;
+                rb.angularDrag = 0.1f;
+            }
+            else
+            {
+                rb.drag = 10;
+                rb.angularDrag = 0.5f;
+            }
         }
         
     }
@@ -118,7 +129,7 @@ public class Boat : MonoBehaviour
         alive = false;
         StartCoroutine(RestartAfterDeath());
 
-        Boat.ScrollSpeed = 0;
+        scroller.Pause();
     }
     private IEnumerator RestartAfterDeath()
     {
@@ -128,13 +139,15 @@ public class Boat : MonoBehaviour
             yield return null;
         }
         SceneManager.LoadScene(0);
-        Boat.ScrollSpeed = 1;
     }
 
     private void OnShock(Cloud shocker)
     {
         shock_build = 0;
         StartCoroutine(FlashLightning(shocker));
+
+        rb.AddTorque((Random.value - 0.5f) * 2f, ForceMode2D.Impulse);
+
         OnDie();
     }
     private void UpdateShockIndicator()

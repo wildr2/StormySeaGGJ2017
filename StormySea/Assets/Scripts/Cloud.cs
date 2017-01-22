@@ -29,7 +29,7 @@ public class Cloud : MonoBehaviour
     private void Update()
     {
         transform.position = (Vector2)transform.position +
-            Vector2.left * Time.deltaTime * Boat.ScrollSpeed * speed;
+            Vector2.left * Time.deltaTime * ScrollManager.ScrollSpeed * speed;
     }
 
     private IEnumerator UpdateSparks()

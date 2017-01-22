@@ -8,6 +8,6 @@ public class Rock : MonoBehaviour
 	private void Update()
     {
         transform.position = (Vector2)transform.position +
-            Vector2.left * Time.deltaTime * Boat.ScrollSpeed * (background ? 0.7f : 1);
+            Vector2.left * Time.deltaTime * ScrollManager.ScrollSpeed * (background ? 0.7f : 1);
     }
 }
