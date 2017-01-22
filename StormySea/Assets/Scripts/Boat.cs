@@ -8,9 +8,9 @@ public class Boat : MonoBehaviour
     private ScrollManager scroller;
 
     private Rigidbody2D rb;
-    public SpriteRenderer sprite_r, shock_indicator;
+    public SpriteRenderer alive_sr, dead_sr, shock_sr;
     public ParticleSystem fire;
-    public SpriteRenderer lightning;
+    public SpriteRenderer lightning, glow;
 
     private float speed = 6f;
     private float slope_slide = 2f;
@@ -50,19 +50,22 @@ public class Boat : MonoBehaviour
     }
     private void Update()
     {
-        // shock diminish
-        if (shocking_cloud != null) 
+        if (alive)
         {
-            shock_build += Time.deltaTime * shock_build_rate;
-            if (shock_build >= 1)
+            // shock diminish
+            if (shocking_cloud != null)
             {
-                OnShock(shocking_cloud);
+                shock_build += Time.deltaTime * shock_build_rate;
+                if (shock_build >= 1)
+                {
+                    OnShock(shocking_cloud);
+                }
             }
-        }
-        else shock_build = Mathf.Max(0, shock_build - Time.deltaTime * shock_fall_rate);
-        shocking_cloud = null;
+            else shock_build = Mathf.Max(0, shock_build - Time.deltaTime * shock_fall_rate);
+            shocking_cloud = null;
 
-        UpdateShockIndicator();
+            UpdateShockIndicator();
+        }
     }
     private void FixedUpdate()
     {
@@ -133,6 +136,7 @@ public class Boat : MonoBehaviour
     {
         alive = false;
         StartCoroutine(RestartAfterDeath());
+        StartCoroutine(FadeGlow());
 
         scroller.Pause();
     }
@@ -145,10 +149,22 @@ public class Boat : MonoBehaviour
         }
         SceneManager.LoadScene(0);
     }
+    private IEnumerator FadeGlow()
+    {
+        Color c0 = glow.color;
+        for (float t = 0; t < 1; t += Time.deltaTime / 5f)
+        {
+            glow.color = Color.Lerp(c0, Color.clear, t);
+            alive_sr.color = Color.Lerp(Color.white, Color.clear, t);
+            yield return null;
+        }
+    }
 
     private void OnShock(Cloud shocker)
     {
-        shock_build = 0;
+        shock_build = 1;
+        fire.enableEmission = false;
+
         StartCoroutine(FlashLightning(shocker));
 
         rb.AddTorque((Random.value - 0.5f) * 2f, ForceMode2D.Impulse);
@@ -157,12 +173,15 @@ public class Boat : MonoBehaviour
     }
     private void UpdateShockIndicator()
     {
-        //if (shock_build == 0) fire.enableEmission = false;
-        //else fire.enableEmission = true;
-        //fire.startLifetime = shock_build;
+        if (shock_build == 0) fire.enableEmission = false;
+        else fire.enableEmission = true;
 
-        
-        shock_indicator.color = Color.Lerp(Color.clear, Color.white, shock_build);
+        Color c = fire.startColor;
+        c.a = shock_build;
+        fire.startColor = c;
+
+        shock_sr.color = Color.Lerp(Color.clear, Color.white, Mathf.Pow(shock_build, 4));
+        shock_sr.enabled = shock_build > 0;
     }
 
     private IEnumerator FlashLightning(Cloud shocker)
@@ -182,6 +201,9 @@ public class Boat : MonoBehaviour
             yield return null;
         }
         lightning.gameObject.SetActive(false);
+
+        shock_build = 0;
+        UpdateShockIndicator();
     }
 
 }
