@@ -29,7 +29,7 @@ public class Boat : MonoBehaviour
 
     public System.Action<Boat> on_boat_die;
 
-    public AudioSource lightning_audio, sizzle_sound;
+    public AudioSource lightning_audio, sizzle_sound, bump_sound;
 
 
     public float GetDistanceTravelled()
@@ -48,8 +48,12 @@ public class Boat : MonoBehaviour
     {
         if (alive)
         {
+            bump_sound.pitch = 1 + (Random.value - 0.5f) * 0.1f;
+            bump_sound.Play();
             if (collision.collider.GetComponent<Rock>() != null)
+            {
                 OnDie();
+            }
         }   
     }
     private void OnTriggerStay2D(Collider2D collider)
