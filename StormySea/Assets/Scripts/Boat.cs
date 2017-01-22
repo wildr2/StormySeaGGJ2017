@@ -147,6 +147,9 @@ public class Boat : MonoBehaviour
     private void OnDie()
     {
         alive = false;
+
+        fire.Stop();
+
         StartCoroutine(RestartAfterDeath());
         StartCoroutine(FadeGlow());
 
