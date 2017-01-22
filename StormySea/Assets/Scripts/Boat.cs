@@ -19,6 +19,8 @@ public class Boat : MonoBehaviour
     private float x_boundary = 8f;
 
     private bool alive = true;
+    private float input_seconds = 0;
+    public float Score { get; private set; }
 
     private float shock_build_rate = 1;
     private float shock_fall_rate = 1;
@@ -82,6 +84,9 @@ public class Boat : MonoBehaviour
             // input
             float input_x = Input.GetAxis("Horizontal");
             acceleration += input_x * speed;
+
+            input_seconds += input_x != 0 ? Time.deltaTime : 0;
+            Score = (int)((scroller.DistanceTravelled + transform.position.x - input_seconds) * 10f);
 
             // slope
             float slope = tangent.y / tangent.x;

@@ -7,11 +7,8 @@ public class ScrollManager : MonoBehaviour
 
     public static float ScrollSpeed { get; private set; }
     public bool Paused { get; private set; }
+    public float DistanceTravelled { get; private set; }
 
-    private void Start()
-    {
-        Play();
-    }
     public void Play()
     {
         ScrollSpeed = normal_scroll_speed;
@@ -21,5 +18,14 @@ public class ScrollManager : MonoBehaviour
     {
         ScrollSpeed = 0;
         Paused = true;
+    }
+
+    private void Start()
+    {
+        Play();
+    }
+    private void Update()
+    {
+        DistanceTravelled += ScrollSpeed * Time.deltaTime;
     }
 }
