@@ -29,6 +29,8 @@ public class Boat : MonoBehaviour
 
     public System.Action<Boat> on_boat_die;
 
+    public AudioSource lightning_audio, sizzle_sound;
+
 
     public float GetDistanceTravelled()
     {
@@ -179,6 +181,8 @@ public class Boat : MonoBehaviour
 
     private void OnShock(Cloud shocker)
     {
+        lightning_audio.Play();
+
         shock_build = 1;
         fire.enableEmission = false;
 
@@ -199,6 +203,16 @@ public class Boat : MonoBehaviour
 
         shock_sr.color = Color.Lerp(Color.clear, Color.white, Mathf.Pow(shock_build, 4));
         shock_sr.enabled = shock_build > 0;
+
+        if (sizzle_sound.isPlaying && shock_build == 0)
+        {
+            sizzle_sound.Stop();
+        }
+        else if (!sizzle_sound.isPlaying && shock_build > 0)
+        {
+            sizzle_sound.Play();
+        }
+
     }
 
     private IEnumerator FlashLightning(Cloud shocker)
