@@ -36,6 +36,8 @@ public class Ocean : MonoBehaviour
         float freq_mult = 0.7f;
         float speed_mult = 0.3f;
 
+        Random.seed = 23562362;
+
         wave.waves[0] = new MovingWave(1 * amp_mult, 50 * freq_mult, 2 * speed_mult);
         wave.waves[1] = new MovingWave(1 * amp_mult, 30 * freq_mult, -1 * speed_mult);
         wave.waves[2] = new MovingWave(0.5f * amp_mult, 10 * freq_mult, 3 * speed_mult);
@@ -217,11 +219,14 @@ public class MovingWave
            }
        }
         */
-       amplitudeModifier = (Mathf.PerlinNoise(Time.time * ampRand * 0.1f, t * ampRand2) + 1) * 2.5f; //(0 to 1) * 2f * 4
-       frequencyModifier = (((Mathf.PerlinNoise(Time.time * 0.05f * freqRand, t * freqRand2))/4) + 1.25f) * 2f * (1/(amplitudeModifier));
-       //amplitudeModifier = Mathf.PerlinNoise(Time.time * ampRand * 0.1f, t * ampRand2) * 8f; //(0 to 1) * 2f * 4
-       //frequencyModifier = ((Mathf.PerlinNoise(Time.time * 0.05f * freqRand, t * freqRand2))/2) * 2.5f * (1/(amplitudeModifier));
-       return Mathf.Sin(frequency * t * frequencyModifier + Time.time * speed) * amplitude * t * (1 - t) * amplitudeModifier;
+
+        float time = Time.timeSinceLevelLoad;
+
+        amplitudeModifier = (Mathf.PerlinNoise(time * ampRand * 0.1f, t * ampRand2) + 1) * 2.5f; //(0 to 1) * 2f * 4
+        frequencyModifier = (((Mathf.PerlinNoise(time * 0.05f * freqRand, t * freqRand2)) / 4) + 1.25f) * 2f * (1 / (amplitudeModifier));
+        //amplitudeModifier = Mathf.PerlinNoise(Time.time * ampRand * 0.1f, t * ampRand2) * 8f; //(0 to 1) * 2f * 4
+        //frequencyModifier = ((Mathf.PerlinNoise(Time.time * 0.05f * freqRand, t * freqRand2))/2) * 2.5f * (1/(amplitudeModifier));
+        return Mathf.Sin(frequency * t * frequencyModifier + time * speed) * amplitude * t * (1 - t) * amplitudeModifier;
         //return Mathf.Sin(frequency * t + Time.time * speed) * amplitude * (1 - t); //decrease amplitude from left to right, max to min
     }
     public float GetAmplitude()
