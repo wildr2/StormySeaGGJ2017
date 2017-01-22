@@ -4,6 +4,8 @@ using UnityEngine.SceneManagement;
 
 public class Boat : MonoBehaviour 
 {
+    public const float ScrollSpeed = 1;
+
     private Ocean ocean;
 
     private Rigidbody2D rb;
