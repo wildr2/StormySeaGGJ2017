@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class Boat : MonoBehaviour 
 {
-    public const float ScrollSpeed = 1;
+    public static float ScrollSpeed = 1;
 
     private Ocean ocean;
 
@@ -114,6 +114,8 @@ public class Boat : MonoBehaviour
     {
         alive = false;
         StartCoroutine(RestartAfterDeath());
+
+        Boat.ScrollSpeed = 0;
     }
     private IEnumerator RestartAfterDeath()
     {
@@ -123,6 +125,7 @@ public class Boat : MonoBehaviour
             yield return null;
         }
         SceneManager.LoadScene(0);
+        Boat.ScrollSpeed = 1;
     }
 
     private void OnShock()
