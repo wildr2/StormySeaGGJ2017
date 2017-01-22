@@ -4,32 +4,19 @@ using System.Collections;
 public class Cloud : MonoBehaviour 
 {
     private float shock_speed = 1.3f;
-    public SpriteRenderer spark, sprite;
-
-    private float speed;
-
-    public bool IsDangerous()
-    {
-        return spark != null;
-    }
-
+    public SpriteRenderer spark, cloud;
 
     private void Awake()
     {
-        if (IsDangerous())
-        {
-            StartCoroutine(UpdateSparks());
-            speed = 1;
-        }
-        else
-        {
-            speed = Random.value + 0.5f;
-        }
+        if (spark != null) StartCoroutine(UpdateSparks());
+
+        float r =  0.1f + Random.value * 0.2f;
+        cloud.color = new Color(r, r, r, 0.5f + Random.value * 0.2f);
     }
     private void Update()
     {
         transform.position = (Vector2)transform.position +
-            Vector2.left * Time.deltaTime * Boat.ScrollSpeed * speed;
+            Vector2.left * Time.deltaTime;
     }
 
     private IEnumerator UpdateSparks()
