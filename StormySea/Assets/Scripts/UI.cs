@@ -9,13 +9,16 @@ public class UI : MonoBehaviour
     public Text score_text, restart_text;
     public RectTransform progress_bar_filled;
     public RectTransform progress_ship;
-    
+    public CanvasGroup lower_panel;
+    public Text title;
+
     private void Awake()
     {
         boat = FindObjectOfType<Boat>();
         boat.on_boat_die += OnBoatDie;
 
         scroller = FindObjectOfType<ScrollManager>();
+        StartCoroutine(TitleRoutine());
     }
     private void Update()
     {
@@ -36,6 +39,24 @@ public class UI : MonoBehaviour
     {
         StopAllCoroutines();
         StartCoroutine(BlinkRestartText());
+    }
+    private IEnumerator TitleRoutine()
+    {
+        title.color = Color.white;
+        lower_panel.alpha = 0;
+
+        yield return new WaitForSeconds(1f);
+
+        for (float t = 0; t < 1; t += Time.deltaTime * 3f)
+        {
+            float tt = Mathf.Pow(t, 2);
+
+            title.color = Color.Lerp(Color.white, Color.clear, tt);
+            lower_panel.alpha = Mathf.Lerp(0, 1, tt);
+            yield return null;
+        }
+
+        title.gameObject.SetActive(false);
     }
     private IEnumerator BlinkRestartText()
     {
